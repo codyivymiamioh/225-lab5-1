@@ -5,7 +5,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'roseaw-dockerhub'
         DOCKER_IMAGE = 'cithit/ivyca'
         IMAGE_TAG = "build-${BUILD_NUMBER}"
-        GITHUB_URL = 'https://github.com/codyivymiamioh/225-lab5-1.gitt'
+        GITHUB_URL = 'https://github.com/codyivymiamioh/final.git'
         KUBECONFIG = credentials('ivyca-225')
     }
 
@@ -44,14 +44,6 @@ pipeline {
         }
 
         stage('Deploy to Dev') {
-        stage('Insert Test Data') {
-            steps {
-                script {
-                    sh 'python insert_test_data.py'
-                }
-            }
-        }
-
             steps {
                 script {
                     sh "sed -i 's|${DOCKER_IMAGE}:latest|${DOCKER_IMAGE}:${IMAGE_TAG}|' deployment-dev.yaml"
@@ -60,7 +52,13 @@ pipeline {
             }
         }
 
-        stage('Remove Test Data') {}
+        stage('Insert Test Data') {
+            steps {
+                script {
+                    sh 'python insert_test_data.py'
+                }
+            }
+        }
 
         stage('Run Acceptance Tests') {
             steps {
@@ -71,14 +69,19 @@ pipeline {
             }
         }
 
+        stage('Remove Test Data') {
+            steps {
+                script {
+                    sh 'python remove_test_data.py'
+                }
+            }
+        }
+
         stage("Security Check") {
             steps {
                 sh 'docker pull public.ecr.aws/portswigger/dastardly:latest'
                 sh '''
-                    docker run --user $(id -u) -v ${WORKSPACE}:${WORKSPACE}:rw \
-                    -e BURP_START_URL=http://10.48.10.164 \
-                    -e BURP_REPORT_FILE_PATH=${WORKSPACE}/dastardly-report.xml \
-                    public.ecr.aws/portswigger/dastardly:latest
+                    docker run --user $(id -u) -v ${WORKSPACE}:${WORKSPACE}:rw                     -e BURP_START_URL=http://10.48.10.164                     -e BURP_REPORT_FILE_PATH=${WORKSPACE}/dastardly-report.xml                     public.ecr.aws/portswigger/dastardly:latest
                 '''
             }
         }
