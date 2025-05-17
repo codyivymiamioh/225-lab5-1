@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Quotes</title>
+</head>
+<body>
+    <h1>Saved Quotes</h1>
+    <ul>
+    {% for author, quote in quotes %}
+        <li><strong>{{ author }}</strong>: {{ quote }}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
