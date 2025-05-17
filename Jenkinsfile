@@ -55,7 +55,7 @@ pipeline {
         stage('Insert Test Data') {
             steps {
                 script {
-                    sh 'python insert_test_data.py'
+                    sh 'python3 insert_test_data.py'
                 }
             }
         }
@@ -72,7 +72,7 @@ pipeline {
         stage('Remove Test Data') {
             steps {
                 script {
-                    sh 'python remove_test_data.py'
+                    sh 'python3 remove_test_data.py'
                 }
             }
         }
