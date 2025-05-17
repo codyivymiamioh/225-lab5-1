@@ -5,7 +5,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'roseaw-dockerhub'
         DOCKER_IMAGE = 'cithit/ivyca'
         IMAGE_TAG = "build-${BUILD_NUMBER}"
-        GITHUB_URL = 'https://github.com/codyivymiamioh/225-lab5-1.git'
+        GITHUB_URL = 'https://github.com/codyivymiamioh/final.git'
         KUBECONFIG = credentials('ivyca-225')
     }
 
@@ -44,6 +44,14 @@ pipeline {
         }
 
         stage('Deploy to Dev') {
+        stage('Insert Test Data') {
+            steps {
+                script {
+                    sh 'python insert_test_data.py'
+                }
+            }
+        }
+
             steps {
                 script {
                     sh "sed -i 's|${DOCKER_IMAGE}:latest|${DOCKER_IMAGE}:${IMAGE_TAG}|' deployment-dev.yaml"
@@ -51,6 +59,8 @@ pipeline {
                 }
             }
         }
+
+        stage('Remove Test Data') {}
 
         stage('Run Acceptance Tests') {
             steps {
