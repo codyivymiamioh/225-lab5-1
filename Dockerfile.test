@@ -1,0 +1,6 @@
+# Dockerfile.test for dynamic testing (unit tests)
+FROM python:3.11-slim
+WORKDIR /test
+COPY . .
+RUN pip install -r requirements.txt
+CMD ["python", "test_app.py"]

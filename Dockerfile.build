@@ -1,0 +1,5 @@
+# Dockerfile.build used for building and testing during CI
+FROM node:18-alpine
+WORKDIR /app
+COPY . .
+RUN npm install htmlhint --save-dev
